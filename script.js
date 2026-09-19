@@ -523,8 +523,7 @@ function startGame() {
     const gameRules =  
     `
     Welcome to Trivia Hack!! :)
-    You will have 8 seconds to answer each question, once 8 seconds has passed,
-    your answer will be considered as incorrect.
+    You will have 8 questions, once all 8 questions have answered you will be given your score.
     `
     // show game rules
     console.log(gameRules)
@@ -558,13 +557,16 @@ function askCategory(difficulty) {
         } else if (difficulty === 'm') {
             rl.question(selectCategoryOptions, function (answer) {
                 const categoryMedium = answer.toLowerCase()
+                askMediumQuestions(categoryMedium)
             })
         } else if (difficulty === 'h') {
             rl.question(selectCategoryOptions, function (answer) {
                 const categoryHard = answer.toLowerCase()
+                askHardQuestions(categoryHard)
             })
         } else {
             console.log("Error: Invalid input!")
+            resetGame()
             startGame()
         }
 }
@@ -573,6 +575,12 @@ let score = 0
 let questionNumber = 1
 const usedNumbers = []
 
+// reset the numbers
+function resetGame() {
+    score = 0
+    questionNumber = 1
+    usedNumbers.length = 0
+}
 // function for getting random numbers
 function getUniqueRandomNumber() {
     let randomNumber = Math.floor(Math.random() * 8)
@@ -588,18 +596,19 @@ function getUniqueRandomNumber() {
 function askEasyQuestions(category) {
     // to get unique random number
     const randomNumber = getUniqueRandomNumber()
-    if (category === 'science') {
-            console.log(
+    // ask eight questions
+    function askEightQuestions(index) {
+        console.log(
             `
-            ${easyQuestions[0].questions[randomNumber].question}
-            ${easyQuestions[0].questions[randomNumber].choices}
+            ${easyQuestions[index].questions[randomNumber].question}
+            ${easyQuestions[index].questions[randomNumber].choices}
             `
         )
         
         rl.question("Type your answer here: ", function (playerAnswer) {
-            const capitalizedAnswer = 
-                playerAnswer.charAt(0).toUpperCase() + playerAnswer.slice(1).toLowerCase()
-                if (capitalizedAnswer === easyQuestions[0].questions[randomNumber].correctAnswer) {
+            const playerAnswerFormatted = playerAnswer.trim().toLowerCase()
+            const correctAnswer = (easyQuestions[index].questions[randomNumber].correctAnswer).trim().toLowerCase()
+                if (playerAnswerFormatted === correctAnswer) {
                     console.log("Correct!")
                     score += 1
                     questionNumber += 1
@@ -614,13 +623,125 @@ function askEasyQuestions(category) {
                     askEasyQuestions(category)
                 }
             })
+    }
+
+    if (category === 'science') {
+        const index = 0 
+        askEightQuestions(index)
 
     } else if (category === 'html') {
-        console.log(easyQuestions[1].questions)
+        const index = 1
+        askEightQuestions(index)
+
     } else if (category === 'javascript') {
-        console.log(easyQuestions[2].questions)
+        const index = 2
+        askEightQuestions(index)
     } else {
         console.log("Error: Invalid input!")
+        resetGame()
+        startGame()
+    }
+    
+}
+// function to ask Medium questions
+function askMediumQuestions(category) {
+    // to get unique random number
+    const randomNumber = getUniqueRandomNumber()
+    // ask eight questions
+    function askEightQuetions(index) {
+        console.log(
+            `
+            ${mediumQuestions[index].questions[randomNumber].question}
+            ${mediumQuestions[index].questions[randomNumber].choices}
+            `
+        )
+        
+        rl.question("Type your answer here: ", function (playerAnswer) {
+            const playerAnswerFormatted = playerAnswer.trim().toLowerCase()
+            const correctAnswer = (mediumQuestions[index].questions[randomNumber].correctAnswer).trim().toLowerCase()
+                if (playerAnswerFormatted === correctAnswer) {
+                    console.log("Correct!")
+                    score += 1
+                    questionNumber += 1
+                } else {
+                    console.log("Incorrect")
+                    questionNumber += 1
+                }
+                if (questionNumber > 8) {
+                    console.log("Your score:" + score)
+                    rl.close()
+                } else {
+                    askMediumQuestions(category)
+                }
+            })
+    }
+
+    if (category === 'science') {
+        const index = 0 
+        askEightQuetions(index)
+
+    } else if (category === 'html') {
+        const index = 1
+        askEightQuetions(index)
+
+    } else if (category === 'javascript') {
+        const index = 2
+        askEightQuetions(index)
+    } else {
+        console.log("Error: Invalid input!")
+        resetGame()
+        startGame()
+    }
+    
+}
+
+// function to ask Hard questions
+function askHardQuestions(category) {
+    // to get unique random number
+    const randomNumber = getUniqueRandomNumber()
+    // ask eight questions
+    function askEightQuetions(index) {
+        console.log(
+            `
+            ${hardQuestions[index].questions[randomNumber].question}
+            ${hardQuestions[index].questions[randomNumber].choices}
+            `
+        )
+        
+        rl.question("Type your answer here: ", function (playerAnswer) {
+            const playerAnswerFormatted = playerAnswer.trim().toLowerCase()
+            const correctAnswer = (hardQuestions[index].questions[randomNumber].correctAnswer).trim().toLowerCase()
+                if (playerAnswerFormatted === correctAnswer) {
+                    console.log("Correct!")
+                    score += 1
+                    questionNumber += 1
+                } else {
+                    console.log("Incorrect")
+                    questionNumber += 1
+                }
+                if (questionNumber > 8) {
+                    console.log("Your score:" + score)
+                    rl.close()
+                } else {
+                    askHardQuestions(category)
+                }
+            })
+    }
+
+    if (category === 'science') {
+        const index = 0 
+        askEightQuetions(index)
+
+    } else if (category === 'html') {
+        const index = 1
+        askEightQuetions(index)
+
+    } else if (category === 'javascript') {
+        const index = 2
+        askEightQuetions(index)
+    } else {
+        console.log("Error: Invalid input!")
+        resetGame()
         startGame()
     }
     
