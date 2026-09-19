@@ -1,4 +1,10 @@
-const prompt = require('prompt-sync')();
+const readline = require("node:readline")
+
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+})
+
 const easyQuestions = [
   {
     category: "Science",
@@ -511,7 +517,7 @@ const hardQuestions = [
     ]
   }
 ]
-
+// start game
 function startGame() {
     // define game rules
     const gameRules =  
@@ -522,25 +528,79 @@ function startGame() {
     `
     // show game rules
     console.log(gameRules)
-
-    // ask player for to start the game and difficulty level
-    const startGameOrExit = prompt("Press S to Start / Any other key to end").toLowerCase()
-    const difficultyLevel = prompt("Select Difficulty level: E for Easy, M for medium H for hard, any other input to end ").toLowerCase()
-    
-    // if player wants to play, ask difficulty level, or end the game if not
-    if (startGameOrExit === 's') {
-        if (difficultyLevel === 'e') {
-            console.log("You selected level esay")
-        } else if (difficultyLevel === 'm') {
-            console.log("You selected level medium")
-        } else if (difficultyLevel === 'h') {
-            console.log("You selected level hard")
+    // ask player to start or end the game
+    rl.question("Press S to start / Any other key to end: ", function (answer) {
+        // whatever player answers make it in lower case
+        const startGameOrExit = answer.toLowerCase()
+        // if player chooses to play, ask for difficulty level
+        if (startGameOrExit === 's') {
+            rl.question(
+                "Select Difficulty: E for Easy, M for Medium, H for Hard: ", function (answer) {
+                    const difficultyLevel = answer.toLowerCase()
+                    askCategory(difficultyLevel)
+                }
+            )
         } else {
-            console.log("Good bye!");
+            console.log("Good bye!")
+            rl.close()
         }
-    } else {
-        console.log("Good bye!");
-    }
+    })
+};
+
+
+function askCategory(difficulty) {
+    const selectCategoryOptions = "Select category: Science, HTML, or JavaScript: "
+    if (difficulty === 'e') {
+            rl.question(selectCategoryOptions, function (answer) {
+                const categoryEasy = answer.toLowerCase()
+                askEasyQuestions(categoryEasy)
+            })
+        } else if (difficulty === 'm') {
+            rl.question(selectCategoryOptions, function (answer) {
+                const categoryMedium = answer.toLowerCase()
+            })
+        } else if (difficulty === 'h') {
+            rl.question(selectCategoryOptions, function (answer) {
+                const categoryHard = answer.toLowerCase()
+            })
+        } else {
+            console.log("Error: Invalid input!")
+            startGame()
+        }
 }
+
+function askEasyQuestions(category) {
+    let score = 0
+    let questionNumber = 1
+    if (category === 'science') {
+        console.log(
+            `
+            ${easyQuestions[0].questions[0].question}
+            ${easyQuestions[0].questions[0].choices}
+            `
+        )
+        rl.question("Type your answer here: ", function (playerAnswer) {
+            const capitalizedAnswer = 
+                playerAnswer.charAt(0).toUpperCase() + playerAnswer.slice(1).toLowerCase()
+            
+            if (capitalizedAnswer === easyQuestions[0].questions[0].correctAnswer) {
+            console.log("Correct!")
+            } else {
+                console.log("Incorrect")
+            }
+            rl.close()
+        })
+
+    } else if (category === 'html') {
+        console.log(easyQuestions[1].questions)
+    } else if (category === 'javascript') {
+        console.log(easyQuestions[2].questions)
+    } else {
+        console.log("Error: Invalid input!")
+        startGame()
+    }
+    
+}
+
 
 startGame()
