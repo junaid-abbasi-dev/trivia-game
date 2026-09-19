@@ -569,27 +569,51 @@ function askCategory(difficulty) {
         }
 }
 
+let score = 0
+let questionNumber = 1
+const usedNumbers = []
+
+// function for getting random numbers
+function getUniqueRandomNumber() {
+    let randomNumber = Math.floor(Math.random() * 8)
+
+    while (usedNumbers.includes(randomNumber)) {
+        randomNumber = Math.floor(Math.random() * 8)
+    }
+
+    usedNumbers.push(randomNumber)
+    return randomNumber
+}
+// function to ask easy questions
 function askEasyQuestions(category) {
-    let score = 0
-    let questionNumber = 1
+    // to get unique random number
+    const randomNumber = getUniqueRandomNumber()
     if (category === 'science') {
-        console.log(
+            console.log(
             `
-            ${easyQuestions[0].questions[0].question}
-            ${easyQuestions[0].questions[0].choices}
+            ${easyQuestions[0].questions[randomNumber].question}
+            ${easyQuestions[0].questions[randomNumber].choices}
             `
         )
+        
         rl.question("Type your answer here: ", function (playerAnswer) {
             const capitalizedAnswer = 
                 playerAnswer.charAt(0).toUpperCase() + playerAnswer.slice(1).toLowerCase()
-            
-            if (capitalizedAnswer === easyQuestions[0].questions[0].correctAnswer) {
-            console.log("Correct!")
-            } else {
-                console.log("Incorrect")
-            }
-            rl.close()
-        })
+                if (capitalizedAnswer === easyQuestions[0].questions[randomNumber].correctAnswer) {
+                    console.log("Correct!")
+                    score += 1
+                    questionNumber += 1
+                } else {
+                    console.log("Incorrect")
+                    questionNumber += 1
+                }
+                if (questionNumber > 8) {
+                    console.log("Your score:" + score)
+                    rl.close()
+                } else {
+                    askEasyQuestions(category)
+                }
+            })
 
     } else if (category === 'html') {
         console.log(easyQuestions[1].questions)
