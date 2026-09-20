@@ -604,10 +604,13 @@ function askEasyQuestions(category) {
             ${easyQuestions[index].questions[randomNumber].choices}
             `
         )
-        
+        // this call back function asks Eight questions, once 8 questions have been asked, the readline will close 
+        // see line 622
         rl.question("Type your answer here: ", function (playerAnswer) {
             const playerAnswerFormatted = playerAnswer.trim().toLowerCase()
+            // normalizes correct answer "The Sun", " The Sun ", " ", will be trimmed, and in lower case 
             const correctAnswer = (easyQuestions[index].questions[randomNumber].correctAnswer).trim().toLowerCase()
+                // checks if the answer is correct or incorrect
                 if (playerAnswerFormatted === correctAnswer) {
                     console.log("Correct!")
                     score += 1
@@ -616,6 +619,7 @@ function askEasyQuestions(category) {
                     console.log("Incorrect")
                     questionNumber += 1
                 }
+                // checks if all 8 questions have been asked
                 if (questionNumber > 8) {
                     console.log("Your score:" + score)
                     rl.close()
@@ -747,5 +751,5 @@ function askHardQuestions(category) {
     
 }
 
-
+// start game
 startGame()
